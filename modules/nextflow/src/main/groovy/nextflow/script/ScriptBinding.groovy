@@ -17,6 +17,8 @@
 
 package nextflow.script
 
+import groovy.transform.CompileDynamic
+import nextflow.script.dsl.ChannelExtensionSpec
 import java.nio.file.Path
 
 import groovy.transform.CompileStatic
@@ -202,6 +204,21 @@ class ScriptBinding extends WorkflowBinding {
      */
     String getVariableName(value) {
         super.getVariables().find { entry -> entry.value?.is(value) }?.getKey()
+    }
+
+    @Override
+    Object invokeMethod(String name, Object args) {
+        switch( name ){
+            case 'importPluginExtensions':
+                return invokeDynamicMethod(name, args)
+            default:
+                super.invokeMethod(name, args)
+        }
+    }
+
+    @CompileDynamic
+    Object invokeDynamicMethod(String name, Object args) {
+        this.getClass().getMethods().find{ it.name ==name}.invoke(this, args)
     }
 
     /**
@@ -407,4 +424,11 @@ class ScriptBinding extends WorkflowBinding {
 
     }
 
+    ChannelExtensionSpec importPluginExtensions(@DelegatesTo(ChannelExtensionSpec) Closure closure){
+        ChannelExtensionSpec spec = new ChannelExtensionSpec()
+        Closure clone = closure.rehydrate(spec, this, this)
+        clone.resolveStrategy = Closure.DELEGATE_ONLY
+        clone()
+        spec
+    }
 }

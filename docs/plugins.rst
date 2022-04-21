@@ -60,3 +60,29 @@ To add a new plugin to the Index, create a pull request including the request pl
 .. tip::
   The `nf-hello plugin <https://github.com/nextflow-io/nf-hello>`_ repository provides an bare minimal code example for
   the implementation of a Nextflow plugin.
+
+Import operators from plugin
+============================
+
+New DSL2 allows to explicitly declare the extension methods imported by a Nextflow plugin and allows in this way
+to precisely control which extensions are going to be used in the workflow script.
+
+In previous versions, Nexflow allowed to invoke ``public`` methods of the ``ChannelExtensionPoint`` implementation in the
+plugin:
+
+    def sql = "select * from FOO"
+    channel.sql.fromQuery(sql, db: "test", emitColumns:true)
+
+With this new syntax developer can specify witch method(s) to use and if desired assign to them an alias:
+
+    importPluginExtensions {
+        alias fromQuery as 'selectFromTable'
+        sqlInsert
+    } from 'nf-sqldb'
+
+    def sql = "select * from FOO"
+    channel
+        .selectFromTable(sql, db: "test", emitColumns:true)
+        .sqlInsert(into:"BAR", columns:'id', db:"test")
+
+

@@ -230,7 +230,7 @@ class ScriptMetaTest extends Dsl2Spec {
             module == true
             name == 'module2'
             scriptFile == 'modules/module2/m2.nf'
-            binFiles == [ 'modules/module2/bin/alpha.sh', 'modules/module2/bin/delta.sh' ]
+            binFiles.sort() == [ 'modules/module2/bin/alpha.sh', 'modules/module2/bin/delta.sh' ]
         }
 
         cleanup:
