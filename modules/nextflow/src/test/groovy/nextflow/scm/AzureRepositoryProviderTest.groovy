@@ -34,6 +34,7 @@ class AzureRepositoryProviderTest extends Specification {
                 server = 'https://dev.azure.com'
                 endpoint = 'https://dev.azure.com'
                 platform = 'azurerepos'
+                organization = 'myorganization'
                 user = 'myname'
                 password = 'mypassword'
                 token = '65eaa9c8ef52460d22a93307fe0aee76289dc675'
@@ -50,7 +51,7 @@ class AzureRepositoryProviderTest extends Specification {
         def obj = new ProviderConfig('azurerepos', config.providers.azurerepos as ConfigObject)
 
         expect:
-        new AzureRepositoryProvider('t-neumann/hello', obj).getEndpointUrl() == 'https://dev.azure.com/t-neumann/hello/_apis/git/repositories/hello'
+        new AzureRepositoryProvider('t-neumann/hello', obj).getEndpointUrl() == 'https://dev.azure.com/myorganization/t-neumann/_apis/git/repositories/hello'
     }
 
     def 'should return repo with organization url' () {
@@ -70,7 +71,7 @@ class AzureRepositoryProviderTest extends Specification {
         def obj = new ProviderConfig('azurerepos', config.providers.azurerepos as ConfigObject)
 
         expect:
-        new AzureRepositoryProvider('t-neumann/hello', obj).getRepositoryUrl() == 'https://dev.azure.com/t-neumann/hello'
+        new AzureRepositoryProvider('t-neumann/hello', obj).getRepositoryUrl() == 'https://dev.azure.com/myorganization/t-neumann'
 
     }
 
@@ -92,7 +93,7 @@ class AzureRepositoryProviderTest extends Specification {
         def obj = new ProviderConfig('azurerepos', config.providers.azurerepos as ConfigObject)
 
         expect:
-        new AzureRepositoryProvider('t-neumann/hello', obj).getContentUrl('main.nf') == 'https://dev.azure.com/t-neumann/hello/_apis/git/repositories/hello/items?download=false&includeContent=true&includeContentMetadata=false&api-version=6.0&\$format=json&path=main.nf'
+        new AzureRepositoryProvider('t-neumann/hello', obj).getContentUrl('main.nf') == 'https://dev.azure.com/myorganization/t-neumann/_apis/git/repositories/hello/items?download=false&includeContent=true&includeContentMetadata=false&api-version=6.0&\$format=json&path=main.nf'
 
     }
 

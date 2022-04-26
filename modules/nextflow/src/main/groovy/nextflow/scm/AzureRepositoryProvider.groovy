@@ -30,23 +30,17 @@ import groovy.transform.Memoized
 @CompileStatic
 final class AzureRepositoryProvider extends RepositoryProvider {
 
-    private String user
+    private String organization
+    private String collection
     private String repo
     private String continuationToken
 
     AzureRepositoryProvider(String project, ProviderConfig config=null) {
-        /*
-        Azure repo format follows Organization/Project/Repository where Project can be optional
-        If Project is not present then Repository is used as Project (and also as Repository)
-         */
-        def tokens = project.tokenize('/')
-        this.repo = tokens.removeLast()
-        if( tokens.size() == 1){
-            this.project = [tokens.first(), this.repo].join('/')
-        }else{
-            this.project = tokens.join('/')
-        }
+        this.project = project
+        this.collection = this.project.tokenize('/').first()
+        this.repo = this.project.tokenize('/').last()
         this.config = config ?: new ProviderConfig('azurerepos')
+        this.organization = this.config.getOrganization()
         this.continuationToken = null
     }
 
@@ -57,7 +51,7 @@ final class AzureRepositoryProvider extends RepositoryProvider {
     /** {@inheritDoc} */
     @Override
     String getEndpointUrl() {
-        "${config.endpoint}/${project}/_apis/git/repositories/${repo}"
+        "${config.endpoint}/${organization}/${collection}/_apis/git/repositories/${repo}"
     }
 
     /** {@inheritDoc} */
@@ -151,13 +145,13 @@ final class AzureRepositoryProvider extends RepositoryProvider {
     /** {@inheritDoc} */
     @Override
     String getCloneUrl() {
-        return "https://dev.azure.com/${project}/_git/${repo}"
+        return "https://dev.azure.com/${organization}/${collection}/_git/${repo}"
     }
 
     /** {@inheritDoc} */
     @Override
     String getRepositoryUrl() {
-        "${config.server}/$project"
+        "https://dev.azure.com/${organization}/${collection}"
     }
 
     /** {@inheritDoc} */
