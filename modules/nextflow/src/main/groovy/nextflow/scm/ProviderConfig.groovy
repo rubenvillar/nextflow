@@ -217,6 +217,11 @@ class ProviderConfig {
         return this
     }
 
+    ProviderConfig setOrganization( String organization ) {
+        attr.organization = organization
+        return this
+    }
+
     String getUser() { attr.user }
 
     String getPassword() { attr.password }
@@ -224,6 +229,8 @@ class ProviderConfig {
     String getPath() { attr.path?.toString() }
 
     String getToken() { attr.token }
+
+    String getOrganization() {attr.organization}
 
     String toString() {
         "ProviderConfig[name: $name, platform: $platform, server: $server]"
