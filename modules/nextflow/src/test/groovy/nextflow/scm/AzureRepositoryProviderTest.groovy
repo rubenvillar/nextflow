@@ -54,16 +54,6 @@ class AzureRepositoryProviderTest extends Specification {
         new AzureRepositoryProvider('t-neumann/hello', obj).getEndpointUrl() == 'https://dev.azure.com/myorganization/t-neumann/_apis/git/repositories/hello'
     }
 
-    def 'should return repo with organization url' () {
-
-        given:
-        def config = new ConfigSlurper().parse(CONFIG)
-        def obj = new ProviderConfig('azurerepos', config.providers.azurerepos as ConfigObject)
-
-        expect:
-        new AzureRepositoryProvider('ORGANIZATION/PROJECT/hello', obj).getEndpointUrl() == 'https://dev.azure.com/ORGANIZATION/PROJECT/_apis/git/repositories/hello'
-    }
-
     def 'should return project URL' () {
 
         given:
@@ -72,17 +62,6 @@ class AzureRepositoryProviderTest extends Specification {
 
         expect:
         new AzureRepositoryProvider('t-neumann/hello', obj).getRepositoryUrl() == 'https://dev.azure.com/myorganization/t-neumann'
-
-    }
-
-    def 'should return project with organization URL' () {
-
-        given:
-        def config = new ConfigSlurper().parse(CONFIG)
-        def obj = new ProviderConfig('azurerepos', config.providers.azurerepos as ConfigObject)
-
-        expect:
-        new AzureRepositoryProvider('ORGANIZATION/PROJECT/hello', obj).getRepositoryUrl() == 'https://dev.azure.com/ORGANIZATION/PROJECT'
 
     }
 
